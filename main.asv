@@ -15,7 +15,7 @@ b0 = 0.1;
 S0 = 0.5;
 alpha = 0.75;
 
-ntime = 1000;
+ntime = 2000;
 time = linspace(0, T, ntime);
 
 %[M, C, K] = get_mck(m, damping, k, ndof);
@@ -59,25 +59,15 @@ for i=1:ndof
     [t, c] = ode45(@(t, c) solve_c(t, c, G, beta, omega0, beta0, S0, b0, epsilon, alpha), tspan, ic);
 end
 
-omega_eq_2 = zeros(1, numel(c));
-beta_eq = zeros(1, numel(c));
-
 for i=1:numel(c)
-    [dc, omega_eq_2(1, i), beta_eq(1, i)] = solve_c(t(i), c(i), G, beta, omega0, beta0, S0, b0, epsilon, alpha);
+        [dc, omega_eq_2, beta_eq] = solve_c(t, c, G, beta, omega0, beta0, S0, b0, epsilon, alpha);
 end
+plot(time, c')
 
 %% plot
-figure(1)
+figure(3)
 plot(t,c./G)
 title("Oscillator non-stationary response variance E[x^2] = G^{-1}c(t)")
-
-figure(2)
-plot(t,sqrt(omega_eq_2))
-title("Equivalent natural frequency")
-
-figure(3)
-plot(t,beta_eq + beta0)
-title("Equivalent beta + beta0")
 
 %% survival probability
 barrier = 0.35;
